@@ -11,7 +11,7 @@ COOL_DOWN = 10  # frames until next shot
 
 MUSHROOM_SPAWN_RATE = 20  # frames between spawning new mushrooms
 
-TIMEOUT = 3000
+TIMEOUT = 3600
 
 
 class Tiles(IntEnum):

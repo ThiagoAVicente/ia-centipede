@@ -24,11 +24,11 @@ MAP_SIZE = (40, 24)
 
 
 class Centipede:
-    def __init__(self, player_name: str, segments: list[tuple[int, int]]):
+    def __init__(self, player_name: str, segments: list[tuple[int, int]], dir: Direction = Direction.EAST):
         self._name = player_name
         self._body = segments
         logger.info(f"Centipede {self._name} created with body {self._body}")
-        self._direction: Direction = Direction.EAST
+        self._direction = dir
         self._history = deque(maxlen=HISTORY_LEN)
         self._alive = True
         self.lastkey = ""
@@ -258,7 +258,7 @@ class Mushroom:
 
     @property
     def health(self):
-        return self.health
+        return self._health
 
     def collision(self, pos):
         return pos == self._pos
@@ -411,22 +411,24 @@ class Game:
                 if centipede.collision(blast):
                     if (new_body := centipede.take_hit(blast)) != []:
                         new_centipede = Centipede(
-                            centipede.name + "_" + str(random.randint(1, 100)), new_body
+                            centipede.name + "_" + str(random.randint(1, 100)),
+                            new_body,
+                            centipede.direction
                         )  # TODO proper naming for child centipede
 
                         self._centipedes.append(new_centipede)
 
-                        self._score += (
-                            KILL_CENTIPEDE_BODY_POINTS - blast[1]
-                        )  # higher points for hitting higher up the screen
-                        logger.info(
-                            "Centipede <%s> was hit by a blast and split",
-                            centipede.name,
-                        )
+                    self._score += (
+                        KILL_CENTIPEDE_BODY_POINTS - blast[1]
+                    )  # higher points for hitting higher up the screen
+                    logger.info(
+                        "Centipede <%s> was hit by a blast and split",
+                        centipede.name,
+                    )
 
-                        self._mushrooms.append(Mushroom(x=blast[0], y=blast[1]))
+                    self._mushrooms.append(Mushroom(x=blast[0], y=blast[1]))
 
-                        to_be_removed.append(blast)
+                    to_be_removed.append(blast)
             self._blasts = [b for b in self._blasts if b not in to_be_removed]
 
             # check collisions with bug blaster

@@ -6,6 +6,8 @@ from .common import Directions, Centipede, Food, Stone, Blast, get_direction
 
 from dataclasses import dataclass
 
+BACKGROUND_COLOR = "black"
+
 @dataclass
 class Info:
     text: str
@@ -19,20 +21,20 @@ class GameInfoSprite(pygame.sprite.Sprite):
         self.line = line
         self.column = column
         self.image = pygame.Surface([WIDTH * SCALE, (self.line + 1) * SCALE])
-        self.image.set_colorkey("white")
+        self.image.set_colorkey(BACKGROUND_COLOR)
         self.rect = self.image.get_rect()
         self.SCALE = SCALE
 
     def update(self):
-        self.image.fill("white")
-        self.image.set_colorkey("white")
+        self.image.fill(BACKGROUND_COLOR)
+        self.image.set_colorkey(BACKGROUND_COLOR)
 
         self.image.blit(
             self.font.render(
                 self.info.text,
                 True,
                 "purple",
-                "white",
+                BACKGROUND_COLOR,
             ),
             (self.column * self.SCALE, self.line * self.SCALE),
         )
@@ -45,13 +47,13 @@ class GameStateSprite(pygame.sprite.Sprite):
         self.player = player
         self.pos = pos
         self.image = pygame.Surface([WIDTH * SCALE, (self.pos + 1) * SCALE])
-        self.image.set_colorkey("white")
+        self.image.set_colorkey(BACKGROUND_COLOR)
         self.rect = self.image.get_rect()
         self.SCALE = SCALE
 
     def update(self):
-        self.image.fill("white")
-        self.image.set_colorkey("white")
+        self.image.fill(BACKGROUND_COLOR)
+        self.image.set_colorkey(BACKGROUND_COLOR)
 
 
         self.image.blit(
@@ -59,7 +61,7 @@ class GameStateSprite(pygame.sprite.Sprite):
                 f"{self.player} : 0", # TODO score
                 True,
                 "purple",
-                "white",
+                BACKGROUND_COLOR,
             ),
             (0, self.pos * self.SCALE),
         )
@@ -79,8 +81,8 @@ class ScoreBoardSprite(pygame.sprite.Sprite):
         self.SCALE = SCALE
 
     def update(self):
-        self.image.fill("white")
-        self.image.set_colorkey("white")
+        self.image.fill(BACKGROUND_COLOR)
+        self.image.set_colorkey(BACKGROUND_COLOR)
 
         scale = lambda t: (int(t[0] * self.SCALE), int(t[1] * self.SCALE))
 
@@ -88,7 +90,7 @@ class ScoreBoardSprite(pygame.sprite.Sprite):
         table_surface.fill((70, 70, 70))
 
         table_surface.blit(
-            self.font.render("THE 10 BEST PLAYERS", True, "white"), scale((3, 1))
+            self.font.render("THE 10 BEST PLAYERS", True, BACKGROUND_COLOR), scale((3, 1))
         )
 
         table_surface.blit(self.font.render("RANK", True, "orange"), scale((1, 3)))
@@ -160,8 +162,8 @@ class StoneSprite(pygame.sprite.Sprite):
         self.update()
 
     def update(self):
-        self.image.fill("white")
-        self.image.set_colorkey("white")
+        self.image.fill(BACKGROUND_COLOR)
+        self.image.set_colorkey(BACKGROUND_COLOR)
 
         # Render Stone
         self.image.blit(
@@ -187,8 +189,8 @@ class BlastSprite(pygame.sprite.Sprite):
         self.update()
 
     def update(self):
-        self.image.fill("white")
-        self.image.set_colorkey("white")
+        self.image.fill(BACKGROUND_COLOR)
+        self.image.set_colorkey(BACKGROUND_COLOR)
 
         # Render Blast
         self.image.blit(
@@ -215,8 +217,8 @@ class FoodSprite(pygame.sprite.Sprite):
         self.update()
 
     def update(self):
-        self.image.fill("white")
-        self.image.set_colorkey("white")
+        self.image.fill(BACKGROUND_COLOR)
+        self.image.set_colorkey(BACKGROUND_COLOR)
 
         # Render Food
         self.image.blit(
@@ -242,8 +244,8 @@ class BugBlasterSprite(pygame.sprite.Sprite):
         self.update()
 
     def update(self):
-        self.image.fill("white")
-        self.image.set_colorkey("white")
+        self.image.fill(BACKGROUND_COLOR)
+        self.image.set_colorkey(BACKGROUND_COLOR)
 
         # Render Bug Blaster
         self.image.blit(
@@ -302,8 +304,8 @@ class CentipedeSprite(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def update(self):
-        self.image.fill("white")
-        self.image.set_colorkey("white")
+        self.image.fill(BACKGROUND_COLOR)
+        self.image.set_colorkey(BACKGROUND_COLOR)
 
         # Get Head
         prev_x, prev_y = self.centipede.body[0]

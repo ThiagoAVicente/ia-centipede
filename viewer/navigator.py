@@ -8,27 +8,6 @@ NAVIGATOR_PANEL_WIDTH = 200
 logger = logging.getLogger("Navigator")
 logger.setLevel(logging.DEBUG)
 
-def draw_navigator_panel(display,SCALE, WIDTH, HEIGHT):
-    x = int(SCALE * WIDTH) + 10
-
-    panel_font = pygame.font.Font(None, 24)
-    pygame.draw.rect(display, (40, 40, 40), (int(SCALE * WIDTH), 0, 180, int(SCALE * HEIGHT)))
-
-    controls = [
-        "Controls:",
-        "LARROW: go back",
-        "RARROW: go forward",
-        "SPACE: Pause/Replay",
-        "Enter:  Go live",
-    ]
-
-    y = 20
-    for line in controls:
-        if line:
-            text = panel_font.render(line, True, (255, 255, 255))  # White text
-            display.blit(text, (x, y))
-        y += 30
-
 class FrameNavigator:
     def __init__(self, buffer_size:int=100) -> None:
         self.buffer = deque(maxlen=buffer_size)

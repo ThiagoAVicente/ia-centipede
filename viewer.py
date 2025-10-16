@@ -9,7 +9,7 @@ from consts import Tiles
 import pygame
 import websockets
 
-from viewer.navigator import FrameNavigator, NAVIGATOR_PANEL_WIDTH, draw_navigator_panel
+from viewer.navigator import FrameNavigator, NAVIGATOR_PANEL_WIDTH
 
 replay_buffer_size:int
 frame_nav:FrameNavigator
@@ -26,6 +26,7 @@ from viewer.common import (
     int2dir,
 )
 from viewer.sprites import (
+    BACKGROUND_COLOR,
     BlastSprite,
     BugBlasterSprite,
     Info,
@@ -88,8 +89,7 @@ async def main(SCALE):
     WIDTH, HEIGHT = newgame_json["size"]
     MAP = newgame_json["map"]
 
-    display = pygame.display.set_mode((SCALE * WIDTH + NAVIGATOR_PANEL_WIDTH, SCALE * HEIGHT))
-    draw_navigator_panel(display,SCALE,WIDTH, HEIGHT)
+    display = pygame.display.set_mode((SCALE * WIDTH, SCALE * HEIGHT))
 
     all_sprites = pygame.sprite.Group()
     centipede_sprites = pygame.sprite.Group()
@@ -248,9 +248,7 @@ async def main(SCALE):
         new_game = False
 
         # Render Window
-        # display.fill("white")
-        # fill the game side of the display
-        display.fill("white", pygame.Rect(0, 0, int(SCALE * WIDTH), int(SCALE * HEIGHT)))
+        display.fill(BACKGROUND_COLOR)
 
         try:
             all_sprites.update()
