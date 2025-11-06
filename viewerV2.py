@@ -224,15 +224,19 @@ async def main(SCALE):
                     )
 
             # Remove dead centipedes
+            dead_centipede_names = []
             for centipede in centipedes.values():
                 if centipede.name not in [s["name"] for s in centipedes_update]:
-                    centipede_sprites.remove(
-                        [
-                            s
-                            for s in centipede_sprites
-                            if s.centipede.name == centipede.name
-                        ]
-                    )
+                    # Remove sprites
+                    for sprite in centipede_sprites:
+                        if sprite.centipede.name == centipede.name:
+                            centipede_sprites.remove(sprite)
+                    # Track for removal from dictionary
+                    dead_centipede_names.append(centipede.name)
+            
+            # Remove from centipedes dictionary
+            for name in dead_centipede_names:
+                del centipedes[name]
 
         # update bug blaster
         if "bug_blaster" in state:
