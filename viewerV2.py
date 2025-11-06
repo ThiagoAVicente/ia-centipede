@@ -108,7 +108,7 @@ async def main(SCALE):
         try:
             new_state = json.loads(q.get_nowait())
             frame_nav.add_frame(new_state)
-            pprint.pprint(new_state)
+            # pprint.pprint(new_state)
         except asyncio.queues.QueueEmpty:
             await asyncio.sleep(0.1/GAME_SPEED)
 
@@ -157,14 +157,9 @@ async def main(SCALE):
         if new_game or prev_mushrooms != mushrooms_update:
             food_sprites.empty()
 
-            foods = {
-                f"{food}": Food(
-                    pos=(food["pos"][0], food["pos"][1])
-                )  # TODO pass heatlh
-                for food in mushrooms_update
-            }
             food_sprites.add(
-                [FoodSprite(food, WIDTH, HEIGHT, SCALE) for food in foods.values()]
+                [FoodSprite(Food(pos=(food["pos"][0], food["pos"][1])), WIDTH, HEIGHT, SCALE)
+                 for food in mushrooms_update]
             )
             prev_mushrooms = mushrooms_update
 
@@ -177,13 +172,11 @@ async def main(SCALE):
                             StoneSprite(Stone(pos=(x, y)), WIDTH, HEIGHT, SCALE)
                         )
 
-        # Update centipedes
-        if new_game or not all(
-            [
-                centipede["name"] in [s.name for s in centipedes.values()]
-                for centipede in centipedes_update
-            ]
-        ):
+        # Update centipedes - cache name lookups for efficiency
+        centipede_names_current = {s.name for s in centipedes.values()}
+        centipede_names_update = {c["name"] for c in centipedes_update}
+
+        if new_game or not centipede_names_update.issubset(centipede_names_current):
             all_sprites.empty()
             centipede_sprites.empty()
 
@@ -223,20 +216,16 @@ async def main(SCALE):
                         centipede["direction"]
                     )
 
-            # Remove dead centipedes
-            dead_centipede_names = []
-            for centipede in centipedes.values():
-                if centipede.name not in [s["name"] for s in centipedes_update]:
-                    # Remove sprites
-                    for sprite in centipede_sprites:
-                        if sprite.centipede.name == centipede.name:
-                            centipede_sprites.remove(sprite)
-                    # Track for removal from dictionary
-                    dead_centipede_names.append(centipede.name)
-            
-            # Remove from centipedes dictionary
-            for name in dead_centipede_names:
-                del centipedes[name]
+            dead_centipede_names = centipede_names_current - centipede_names_update
+
+            if dead_centipede_names:
+                sprites_to_remove = [s for s in centipede_sprites if s.centipede.name in dead_centipede_names]
+                for sprite in sprites_to_remove:
+                    centipede_sprites.remove(sprite)
+
+                # Remove from centipedes dictionary
+                for name in dead_centipede_names:
+                    del centipedes[name]
 
         # update bug blaster
         if "bug_blaster" in state:
@@ -254,14 +243,18 @@ async def main(SCALE):
         # Render Window
         display.fill(BACKGROUND_COLOR)
 
-        try:
+        # Update only non-empty sprite groups
+        if all_sprites:
             all_sprites.update()
+        if centipede_sprites:
             centipede_sprites.update()
+        if food_sprites:
             food_sprites.update()
+        if stone_sprites:
             stone_sprites.update()
+        if bugblaster_sprites:
             bugblaster_sprites.update()
-        except Exception as e:
-            logging.error(e)
+
         stone_sprites.draw(display)
         food_sprites.draw(display)
         all_sprites.draw(display)
