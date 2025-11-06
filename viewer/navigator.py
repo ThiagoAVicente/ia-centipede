@@ -110,6 +110,7 @@ class FrameNavigator:
         if not self.buffer:
             return False
         self.current_index = -1
+        self.isPaused = False
         return True
 
     def get_info(self) -> str:
